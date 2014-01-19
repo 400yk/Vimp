@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    var geoXmlDoc;
+
     function initialize() {
         var mapOptions = {
             center: new google.maps.LatLng(35.321394, -119.016564),
@@ -17,9 +19,56 @@ zoom: 10
 
     function useTheData(doc) {
         geoXmlDoc = doc[0]
-        // Remove the markers on the map
-        for (var i=0;i<geoXmlDoc.markers.length;i++) {
-            geoXmlDoc.markers[i].setVisible(false);
+            // Remove the markers on the map
+            for (var i=0;i<geoXmlDoc.markers.length;i++) {
+                geoXmlDoc.markers[i].setVisible(false);
+            }
+            for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
+               var placemark = geoXmlDoc.placemarks[i];
+               if (placemark.polygon) {
+                    placemark.polygon.setOptions({fillOpacity: 0});
+               } 
+            }
+    }
+
+    // Convert numeric value to hexadecimal colors
+    function getColor(value) {
+        // More votes for republican, show red
+        var red = 0;
+        var blue = 0;
+        var green = 0;
+        if (value > 0) {
+            var trimmed_value = Math.min(value / 0.7, 1);
+            red = 255;
+            blue = Math.round((1 - trimmed_value) * 255);
+            green = Math.round((1 - trimmed_value) * 255);
+            trimmed_value = null;
+        } else if (value == 0) {
+            return "#FFFFFF";
+        } else if (value < 0) {
+            var trimmed_value = Math.max(value / 0.7, -1);
+            blue = 255;
+            red = Math.round((1 + trimmed_value) * 255);
+            green = Math.round((1 + trimmed_value) * 255);
+            trimmed_value = null;
+        }
+        var second = red % 16;
+        var first = (red - second) / 16;
+        var fourth = green % 16;
+        var third = (green - fourth) / 16;
+        var sixth = blue % 16;
+        var fifth = (blue - sixth) / 16;
+        return ("#" + first.toString(16) + second.toString(16) + third.toString(16) + fourth.toString(16) + fifth.toString(16) + sixth.toString(16));
+    }
+
+    function colorPolygon(precinct, color) {
+        for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
+            var placemark = geoXmlDoc.placemarks[i];
+            // Color the polygon with name equals to prcinct
+            if (placemark.polygon && placemark.name == precinct) {
+                var colorOptions = {fillColor: getColor(color), fillOpacity: 0.8};
+                placemark.polygon.setOptions(colorOptions); 
+            }
         }
     }
 
@@ -45,26 +94,11 @@ zoom: 10
                         var vote_no = data_line[4];  
 
                         if (vote_yes && vote_no) {
-                            var number = vote_yes - vote_no;
-                            if (number < 0) {
-                                colorPolygon(ge_obj, precinct, -1);
-                            }
-                            if (number > 0) {
-                                colorPolygon(ge_obj, precinct, 1);
-                            }
-                            if (number == 0) {
-                                colorPolygon(ge_obj, precinct, 0);
-                            }
-                        }  
-
+                            colorPolygon(precinct, (vote_yes - vote_no) / (vote_yes + vote_no));
+                        }
                     }             
                 } // end of reader onload function
                 reader.readAsText(file);   
-                ge.getFeatures().appendChild(ge_obj);
-                var la = ge.createLookAt('');
-                la.set(35.321394, -119.016564, 25, ge.ALTITUDE_RELATIVE_TO_GROUND,
-                        0, 0, 40000);
-                ge.getView().setAbstractView(la);      
             } else {
                 fileDisplayArea.innerText = "File not supported!";
             }
