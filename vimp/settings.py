@@ -13,6 +13,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(BASE_DIR, '../../vimp_static').replace('\\','/')
 
+GOOGLE_MAP_KEY = "AIzaSyC_MIUyEK8lGNL1jmbS4M_E9vK66fG9s8k"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
