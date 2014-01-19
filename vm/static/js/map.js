@@ -7,7 +7,7 @@ $(document).ready(function() {
 zoom: 10
         };
         var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-        var kmlurl = STATIC_URL + "kern.kml";
+        var kmlurl = STATIC_URL + "KERN.kml";
         var myParser = new geoXML3.parser({
             map: map,
             afterParse: useTheData
