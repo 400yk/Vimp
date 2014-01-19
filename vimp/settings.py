@@ -35,7 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ej',
+    'vm',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -47,9 +47,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'ejub.urls'
+ROOT_URLCONF = 'vimp.urls'
 
-WSGI_APPLICATION = 'ejub.wsgi.application'
+WSGI_APPLICATION = 'vimp.wsgi.application'
 
 
 # Database
@@ -58,7 +58,7 @@ WSGI_APPLICATION = 'ejub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_ejub',
+        'NAME': 'test_vimp',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
