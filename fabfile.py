@@ -10,7 +10,7 @@ env.roledefs = {
 def deploy():
     project_dir = '/home/youngwide/webapps/vimp'
     django_dir = project_dir + '/vimp'
-    with prefix('source /home/youngwide/webapps/vimp/vimp_site/bin/activate'):
+    with prefix('source /home/youngwide/webapps/vimp/vimp_virtenv/bin/activate'):
         with cd(django_dir):
             run('git fetch')
             run('git pull origin master')
