@@ -10,7 +10,9 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaus7xPd7Lnv5Tgla9Gp_EXMq2swti03w&sensor=false">
         </script>
         <script type="text/javascript" src="{% static 'js/jquery-2.0.3.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/geoxml3.js' %}"></script>
+        <script language="javascript">var STATIC_URL = "{{ STATIC_URL|escapejs }}";</script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/map.js"></script>
         <title>Vimp! - {% block title%}Your map to victory!{% endblock %}</title>
     </head>
     <body>

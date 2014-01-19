@@ -1,17 +1,26 @@
 $(document).ready(function() {
     function initialize() {
         var mapOptions = {
-            center: new google.maps.LatLng(-34.397, 150.644),
-zoom: 8
+            center: new google.maps.LatLng(35.321394, -119.016564),
+zoom: 10
         };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
-            mapOptions);
-   
-    var kmlurl="{% static 'kern.kml' %}";
-    var precinctLayer = new google.maps.KmlLayer({
-        url: kmlurl
-    });
-    precinctLayer.setMap(map);
+        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+        var kmlurl = "http://127.0.0.1:8000" + STATIC_URL + "kern.kml";
+        var myParser = new geoXML3.parser({
+            map: map,
+            afterParse: useTheData
+        });
+        myParser.parse(kmlurl);
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    function useTheData(doc) {
+        geoXmlDoc = doc[0]
+        // Remove the markers on the map
+        for (var i=0;i<geoXmlDoc.markers.length;i++) {
+            geoXmlDoc.markers[i].setVisible(false);
+        }
     }
 
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -63,6 +72,5 @@ zoom: 8
     } else {
         alert('The File APIs are not fully supported by your browser.');
     }     
-    
-    google.maps.event.addDomListener(window, 'load', initialize);
+
 });
