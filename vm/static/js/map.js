@@ -27,6 +27,8 @@ zoom: 10
             var placemark = geoXmlDoc.placemarks[i];
             if (placemark.polygon) {
                 placemark.polygon.setOptions({fillOpacity: 0});
+                // Remove the default listeners that is on every polygon
+                google.maps.event.clearListeners(placemark.polygon, 'click');
             } 
         }
     }
