@@ -10,3 +10,7 @@
 .bold {
     font-weight: bold;
 }
+
+.voter_highlight {
+    background-color: #B3B3B3;
+}

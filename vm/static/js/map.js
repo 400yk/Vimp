@@ -147,6 +147,7 @@ zoom: 10
                     // Create the list of placemarks to display on the home page
                     $.get('/vm/home_precinct_list/', {precinct_list: JSON.stringify(precinct_list)}, function(data) {
                         $("#home-precinct-list").html(data);
+                        $(".btn-detail-class").hide();
 
                         // Once user clicks on any precinct, update map to show it
                         $(".individual-precinct").click(function() {
@@ -164,10 +165,14 @@ zoom: 10
                                 if (placemark.polygon && placemark.name == name) {
                                     // We can just call the click listener we definted before
                                     var e = new Object();
-                                    e.latLng = new google.maps.LatLng(parseFloat(coord_lat),parseFloat(coord_lng));
+                                    e.latLng = new google.maps.LatLng(parseFloat(coord_lat),parseFloat(coord_lng + 0.1));
                                     google.maps.event.trigger(placemark.polygon, "click", e);
                                 }
                             }
+                            // Show the detail button associated with the precinct
+                            $(".btn-detail-class").hide();
+                            $("#btn-detail-" + name).show();
+
                         });
 
                         $(".individual-precinct").mouseenter(function() {

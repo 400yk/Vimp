@@ -2,14 +2,24 @@
 {% if precinct_objs %}
 <h4>List of Precincts</h4>
 <div id="precinct-list-shown"> 
-<ul>
-    {% for precinct in precinct_objs %}
-    {% if precinct.color == "#FFFFFF" %}
-    <li class="individual-precinct" precinct-name="{{ precinct.name }}"coord-lat="{{ precinct.coord_lat }}" coord-lng="{{ precinct.coord_lng }}" coord-alt="{{ precinct.coord_alt }}" style="color: #000000;">{{ precinct.name }}</li>
-    {% else %}
-    <li class="individual-precinct" precinct-name="{{ precinct.name }}"coord-lat="{{ precinct.coord_lat }}" coord-lng="{{ precinct.coord_lng }}" coord-alt="{{ precinct.coord_alt }}" style="color: {{ precinct.color }};">{{ precinct.name }}</li>
-    {% endif %}
-    {% endfor %}
-</ul>
+    <table>
+        {% for precinct in precinct_objs %}
+        {% if precinct.color == "#FFFFFF" %}
+        <tr>
+            <td class="individual-precinct" precinct-name="{{ precinct.name }}"coord-lat="{{ precinct.coord_lat }}" coord-lng="{{ precinct.coord_lng }}" coord-alt="{{ precinct.coord_alt }}" style="color: #000000; float:left;">{{ precinct.name }}</td> 
+            <td style="text-align: right; width: 100%;">
+                <a href="{% url 'vm:precinct_detail' precinct.name %}"class="btn btn-mini btn-primary btn-detail-class" id="btn-detail-{{ precinct.name }}" style="text-align:right;">Detail</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td class="individual-precinct" precinct-name="{{ precinct.name }}"coord-lat="{{ precinct.coord_lat }}" coord-lng="{{ precinct.coord_lng }}" coord-alt="{{ precinct.coord_alt }}" style="color: {{ precinct.color }};">{{ precinct.name }}</td>
+            <td style="text-align: right; width: 100%;">
+                <a href="{% url 'vm:precinct_detail' precinct.name %}" class="btn btn-mini btn-primary btn-detail-class" id="btn-detail-{{ precinct.name }}" style="text-align:right;">Detail</a>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
 </div>
 {% endif %}
