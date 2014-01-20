@@ -1,5 +1,12 @@
-
 #map-canvas { 
     height: 550px;
 }
 
+#precinct-list-shown {
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.bold {
+    font-weight: bold;
+}
