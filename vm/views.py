@@ -14,6 +14,5 @@ def home_precinct_list(request):
     if request.method == "GET":
         precinct_objs = request.GET['precinct_list']
         precinct_objs = json.loads(precinct_objs)
-        print precinct_objs
             
     return render_to_response('vm/home_precinct_list.html', {'precinct_objs': precinct_objs}, context)

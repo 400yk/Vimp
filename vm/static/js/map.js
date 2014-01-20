@@ -76,6 +76,9 @@ zoom: 10
             info_window.setOptions(infoWindowOptions);
             if (e && e.latLng) {
                 info_window.setPosition(e.latLng);
+            } else { 
+                // This is needed because when we call from another 
+                // function there's no position for the mouse
             }
             info_window.open(this.map || this.polylines[0].map);
         });
@@ -153,6 +156,18 @@ zoom: 10
                             var coord_alt = $(this).attr("coord-alt");
                             map.panTo(new google.maps.LatLng(coord_lat, coord_lng));
                             map.setZoom(13);
+
+                            // Turn on the info window for that placemark
+                            for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
+                                var placemark = geoXmlDoc.placemarks[i];
+                                // Color the polygon with name equals to prcinct
+                                if (placemark.polygon && placemark.name == name) {
+                                    // We can just call the click listener we definted before
+                                    var e = new Object();
+                                    e.latLng = new google.maps.LatLng(parseFloat(coord_lat),parseFloat(coord_lng));
+                                    google.maps.event.trigger(placemark.polygon, "click", e);
+                                }
+                            }
                         });
 
                         $(".individual-precinct").mouseenter(function() {
