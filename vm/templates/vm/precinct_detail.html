@@ -5,51 +5,56 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span9">
-    <table>
-        <thead>
-            <th>Voter ID</th>
-            <th>Last name</th>
-            <th>First name</th>
-            <th>Middle name</th>
-            <th>Phone</th>
-            <th>Birthdate</th>
-            <th>Party</th>
-            <th>Precinct name</th>
-            <th>Precinct ID</th>
-            <th>District name</th>
-        </thead>
-        <tbody>
-            {% for voter in voters %}
-            <tr class="individual-voter"><td>{{ voter.lvoteruniqueid }}</td>
-                <td>{{ voter.sznamelast }}</td>
-                <td>{{ voter.sznamefirst }}</td>
-                <td>{{ voter.sznamemiddle }}</td>
-                <td>{{ voter.szphone }}</td>
-                <td>{{ voter.dtbirthdate }}</td>
-                <td>{{ voter.szpartyname }}</td>
-                <td>{{ voter.szprecinctname }}</td>
-                <td>{{ voter.sprecinctid }}</td>
-                <td>{{ voter.szdistrictname_0 }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Voter ID</th>
+                        <th>Last name</th>
+                        <th>First name</th>
+                        <th>Middle name</th>
+                        <th>Phone</th>
+                        <th>Birthdate</th>
+                        <th>Party</th>
+                        <th>Precinct name</th>
+                        <th>Precinct ID</th>
+                        <th>District name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voter in voters %}
+                    <tr class="individual-voter" voter-address="{{ voter.szsitusaddress }}" voter-city="{{ voter.szsituscity }}" voter-state="{{ voter.ssitussate }}" voter-zipcode="{{ voter.ssituszip }}">
+                        <td>{{ voter.lvoteruniqueid }}</td>
+                        <td>{{ voter.sznamelast }}</td>
+                        <td>{{ voter.sznamefirst }}</td>
+                        <td>{{ voter.sznamemiddle }}</td>
+                        <td>{{ voter.szphone }}</td>
+                        <td>{{ voter.dtbirthdate }}</td>
+                        <td>{{ voter.szpartyname }}</td>
+                        <td>{{ voter.szprecinctname }}</td>
+                        <td>{{ voter.sprecinctid }}</td>
+                        <td>{{ voter.szdistrictname_0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-<div class="span3">
-    <div class="container-fluid">
-<div class="column-fluid">
-    <div class="span6">
-        <div id="map-canvas-voter"></div>
-    </div>
-    <div class="span6">
-    </div>
-</div>
-    </div>
+        <div class="span3">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div>
+                        <div id="map-canvas-voter">Loading map...</div>
+                    </div>
+                    <div>hahaha
+                    </div>
+                </div>
+            </div>
 
-</div>
+        </div>
+    </div>
 </div>
 {% endif %}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAP_KEY }}&sensor=false"></script>
+<script type="text/javascript" src="{% static 'js/geoxml3.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/precinct_detail.js' %}"></script>
 {% endblock %}

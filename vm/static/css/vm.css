@@ -2,6 +2,10 @@
     height: 550px;
 }
 
+#map-canvas-voter {
+    height: 300px;
+}
+
 #precinct-list-shown {
     height: 400px;
     overflow-y: scroll;
@@ -11,6 +15,13 @@
     font-weight: bold;
 }
 
+.voter-table-content {
+    height: 550px;
+    overflow: auto;
+}
+
+
 .voter_highlight {
     background-color: #B3B3B3;
 }
+
