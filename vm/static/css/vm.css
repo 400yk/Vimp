@@ -20,8 +20,10 @@
     overflow: auto;
 }
 
-
 .voter_highlight {
     background-color: #B3B3B3;
 }
 
+#voter-address-input {
+    width: 100%;
+}

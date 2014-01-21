@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    var input;
 
     $('.individual-voter').mouseenter(function() {
         $('.individual-voter').removeClass("voter_highlight");
@@ -15,7 +16,16 @@ $(document).ready(function() {
         var city = $(this).attr("voter-city");
         var state = $(this).attr("voter-state");
         var zipcode = $(this).attr("voter-zipcode");
-        
+
+        $("#voter-address-input").attr("value", address + ", " + city + ", " + state + ", " + zipcode);
+
+        // Move the map to show the location of the voter
+           input = /** @type {HTMLInputElement} */(
+                document.getElementById('voter-address-input'));
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+         var searchBox = new google.maps.places.SearchBox(
+                /** @type {HTMLInputElement} */(input)); 
     });
 
     // Javascript for map initialization
@@ -31,5 +41,4 @@ zoom: 10
     }
 
     google.maps.event.addDomListener(window, 'load', initialize);
-
 });
