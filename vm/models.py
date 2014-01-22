@@ -8,7 +8,7 @@
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
 from __future__ import unicode_literals
-
+from datetime import datetime
 from django.db import models
 
 class Wasco(models.Model):
@@ -120,7 +120,14 @@ class Wasco(models.Model):
     szpartyname5 = models.CharField(db_column='szPartyName5', max_length=255, blank=True) # Field name made lowercase.
     szcountedflag5 = models.CharField(db_column='szCountedFlag5', max_length=255, blank=True) # Field name made lowercase.
 
+    # 1 denotes yes, 0 denotes undecided, and -1 denotes no, if null, means no data
+    voter_response = models.IntegerField(null = True)
+
+    yardsign = models.NullBooleanField(null=True)
+    time_response = models.DateTimeField(default = datetime.now, blank = True)
+
     def __unicode__(self):
-        return self.szNameFirst + self.szNameLast
+        return self.sznamefirst + " " + self.sznamelast
     class Meta:
         db_table = 'Wasco'
+

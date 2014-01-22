@@ -27,3 +27,7 @@
 #voter-address-input {
     width: 100%;
 }
+
+.selected_voter {
+    border: 2px solid;
+}

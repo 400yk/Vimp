@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                     {% for voter in voters %}
-                    <tr class="individual-voter" voter-address="{{ voter.szsitusaddress }}" voter-city="{{ voter.szsituscity }}" voter-state="{{ voter.ssitusstate }}" voter-zipcode="{{ voter.ssituszip }}">
+                    <tr class="individual-voter" voter-id="{{ voter.lvoteruniqueid }}" voter-address="{{ voter.szsitusaddress }}" voter-city="{{ voter.szsituscity }}" voter-state="{{ voter.ssitusstate }}" voter-zipcode="{{ voter.ssituszip }}">
                         <td>{{ voter.lvoteruniqueid }}</td>
                         <td>{{ voter.sznamelast }}</td>
                         <td>{{ voter.sznamefirst }}</td>
@@ -46,7 +46,8 @@
                         <div id="map-canvas-voter">Loading map...</div>
                         <input id="voter-address-input" type="text" placeholder="Voter address"></input>
                     </div>
-                    <div>hahaha
+                    <div id="vote_response_div">
+
                     </div>
                 </div>
             </div>

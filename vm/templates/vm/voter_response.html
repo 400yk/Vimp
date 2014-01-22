@@ -1,0 +1,28 @@
+{% load static %}
+<form id="voter-response-form" method="post" action="{% url 'vm:voter_response' voter.lvoteruniqueid %}"> 
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" voter-id="{{ voter.lvoteruniqueid }}" id="voter-response-submit">Submit</button>
+    {% if voter.time_response %}
+    <img style="height:30px; width:30px;" id="submit-successful-checkmark" src="{% static 'img/checkmark.png' %}"></img>
+    {% else %}
+    <img style="height:30px; width:30px; visibility: hidden;" id="submit-successful-checkmark" src="{% static 'img/checkmark.png' %}"></img>
+    {% endif %}
+</form>
+<script>
+    var form = $("#voter-response-form");
+    form.submit(function() {
+        $.ajax({
+            type: form.attr("method"),
+            url: form.attr("action"),
+            data: form.serialize(),
+            success: function(data) {
+                $("#vote_response_div").html(data);
+            },
+            error: function(data) {
+                alert("Failed to insert voter response into database.");
+            }
+        });
+        return false;
+    });
+</script>
