@@ -11,6 +11,21 @@ from __future__ import unicode_literals
 from datetime import datetime
 from django.db import models
 
+class Precinct(models.Model):
+    name = models.CharField(max_length = 255, primary_key = True)
+    coord_lat = models.FloatField(blank = True, null = True)
+    coord_lng = models.FloatField(blank = True, null = True)
+    coord_alt = models.FloatField(blank = True, null = True)
+    area = models.FloatField(blank = True, null = True)
+    population = models.IntegerField(blank = True, null = True)
+    count_yes = models.IntegerField(blank = True, null = True)
+    count_no = models.IntegerField(blank = True, null = True)
+    count_undecided = models.IntegerField(blank = True, null = True)
+    count_yardsign = models.IntegerField(blank = True, null = True)
+
+    def __unicode__(self):
+        return self.name
+
 class Wasco(models.Model):
     lvoteruniqueid = models.IntegerField(db_column='lVoterUniqueID', primary_key=True) # Field name made lowercase.
     saffnumber = models.CharField(db_column='sAffNumber', max_length=255, blank=True) # Field name made lowercase.
@@ -125,9 +140,11 @@ class Wasco(models.Model):
 
     yardsign = models.NullBooleanField(null=True)
     time_response = models.DateTimeField(default = datetime.now, blank = True)
+    precinct = models.ForeignKey(Precinct, null=True)
 
     def __unicode__(self):
         return self.sznamefirst + " " + self.sznamelast
     class Meta:
         db_table = 'Wasco'
+
 

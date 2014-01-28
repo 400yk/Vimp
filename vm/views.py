@@ -5,7 +5,7 @@ from datetime import datetime
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from vm.models import Wasco
+from vm.models import Wasco, Precinct
 from vm.forms import VoteResponseForm
 
 def home(request):
@@ -17,8 +17,34 @@ def home_precinct_list(request):
     precinct_objs = []
     if request.method == "GET":
         precinct_objs = request.GET['precinct_list']
-        precinct_objs = json.loads(precinct_objs)
-            
+        if precinct_objs:
+            precinct_objs = json.loads(precinct_objs)
+
+            # Check if any precinct isn't in the database, if not insert one
+            for obj in precinct_objs:
+                # print obj['name']
+                try:
+                    Precinct.objects.get(pk = obj['name'])
+                except Precinct.DoesNotExist:
+                    p = Precinct.objects.create(
+                            name = obj['name'],
+                            coord_lat = obj['coord_lat'],
+                            coord_lng = obj['coord_lng'],
+                            coord_alt = obj['coord_alt'],
+                            area = obj['area'],
+                            count_yes = 0,
+                            count_no = 0,
+                            count_undecided = 0,
+                            count_yardsign = 0
+                            )
+                    p.save()
+
+        # If didn't pass in a list of precincts, use the default 
+        # list from the database, this happens when user first 
+        # loads the home page (without uploading own precinct file)
+        else:
+            precinct_objs = Precinct.objects.all()
+
     return render_to_response('vm/home_precinct_list.html', {'precinct_objs': precinct_objs}, context)
 
 def precinct_detail(request, precinct_name):

@@ -8,6 +8,21 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Precinct'
+        db.create_table(u'vm_precinct', (
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=255, primary_key=True)),
+            ('coord_lat', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
+            ('coord_lng', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
+            ('coord_alt', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
+            ('area', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
+            ('population', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('count_yes', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('count_no', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('count_undecided', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('count_yardsign', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+        ))
+        db.send_create_signal(u'vm', ['Precinct'])
+
         # Adding model 'Wasco'
         db.create_table(u'Wasco', (
             ('lvoteruniqueid', self.gf('django.db.models.fields.IntegerField')(primary_key=True, db_column=u'lVoterUniqueID')),
@@ -117,16 +132,35 @@ class Migration(SchemaMigration):
             ('spartyabbr5', self.gf('django.db.models.fields.CharField')(max_length=255, db_column=u'sPartyAbbr5', blank=True)),
             ('szpartyname5', self.gf('django.db.models.fields.CharField')(max_length=255, db_column=u'szPartyName5', blank=True)),
             ('szcountedflag5', self.gf('django.db.models.fields.CharField')(max_length=255, db_column=u'szCountedFlag5', blank=True)),
+            ('voter_response', self.gf('django.db.models.fields.IntegerField')(null=True)),
+            ('yardsign', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
+            ('time_response', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
         ))
         db.send_create_signal(u'vm', ['Wasco'])
 
 
     def backwards(self, orm):
+        # Deleting model 'Precinct'
+        db.delete_table(u'vm_precinct')
+
         # Deleting model 'Wasco'
         db.delete_table(u'Wasco')
 
 
     models = {
+        u'vm.precinct': {
+            'Meta': {'object_name': 'Precinct'},
+            'area': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'coord_alt': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'coord_lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'coord_lng': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'count_no': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'count_undecided': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'count_yardsign': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'count_yes': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'primary_key': 'True'}),
+            'population': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        },
         u'vm.wasco': {
             'Meta': {'object_name': 'Wasco', 'db_table': "u'Wasco'"},
             'dtbirthdate': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_column': "u'dtBirthDate'", 'blank': 'True'}),
@@ -235,7 +269,10 @@ class Migration(SchemaMigration):
             'szvotingmethod2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_column': "u'szVotingMethod2'", 'blank': 'True'}),
             'szvotingmethod3': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_column': "u'szVotingMethod3'", 'blank': 'True'}),
             'szvotingmethod4': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_column': "u'szVotingMethod4'", 'blank': 'True'}),
-            'szvotingmethod5': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_column': "u'szVotingMethod5'", 'blank': 'True'})
+            'szvotingmethod5': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_column': "u'szVotingMethod5'", 'blank': 'True'}),
+            'time_response': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'voter_response': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
+            'yardsign': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'})
         }
     }
 
