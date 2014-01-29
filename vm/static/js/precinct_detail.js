@@ -21,15 +21,20 @@ $(document).ready(function() {
         var voter_id = $(this).attr("voter-id");
         var voter_address_input = document.getElementById("voter-address-input");
         $("#voter-address-input").attr("value", address + ", " + city + ", " + state + ", " + zipcode);
-
-        // Move the map to show the location of the voter
-        google.maps.event.trigger(voter_address_input, 'focus');
-        google.maps.event.trigger(voter_address_input, 'keydown', {keyCode: 13});
-
         // Render the form of vote response associated with this voter
         $.get('/vm/voter_response/' + voter_id.toString() + '/', function(data) {
             $("#vote_response_div").html(data);
         }); 
+
+        // Move the map to show the location of the voter
+        try {
+            google.maps.event.trigger(voter_address_input, 'focus');
+            google.maps.event.trigger(voter_address_input, 'keydown', {keyCode: 13});
+        } catch (ReferenceError) { 
+            $("#map-canvas-voter").html("Cannot load Google map, please check your internet connection.");
+        }
+
+
     });
 
     // Javascript for map initialization

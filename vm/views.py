@@ -1,5 +1,6 @@
 import json
 import pytz
+from sum_votes import sum_votes
 from django.shortcuts import render, render_to_response, get_object_or_404
 from datetime import datetime
 from django.http import HttpResponseRedirect, HttpResponse
@@ -86,6 +87,7 @@ def voter_response(request, voter_id):
             response_record = form.save(commit = False)
             response_record.time_response = datetime.now(pytz.timezone('US/Pacific'))
             response_record.save()
+            sum_votes()
         else:
             print form.errors
     elif request.method == "GET":
