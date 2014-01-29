@@ -3,11 +3,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button class="btn btn-primary" voter-id="{{ voter.lvoteruniqueid }}" id="voter-response-submit">Submit</button>
-    {% if voter.time_response %}
-    <img style="height:30px; width:30px;" id="submit-successful-checkmark" src="{% static 'img/checkmark.png' %}"></img>
-    {% else %}
     <img style="height:30px; width:30px; visibility: hidden;" id="submit-successful-checkmark" src="{% static 'img/checkmark.png' %}"></img>
-    {% endif %}
 </form>
 <script>
     var form = $("#voter-response-form");
@@ -18,6 +14,8 @@
             data: form.serialize(),
             success: function(data) {
                 $("#vote_response_div").html(data);
+                // Show the "check" image upon submit success
+                document.getElementById("submit-successful-checkmark").style.visibility = 'visible';
             },
             error: function(data) {
                 alert("Failed to insert voter response into database.");

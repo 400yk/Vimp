@@ -24,7 +24,8 @@
 }
 
 .selected_voter {
-    border: 2px solid;
+   /*  outline: 2px solid; */
+    background-color: #FFFF00;
 }
 
 #voters-table > tbody {

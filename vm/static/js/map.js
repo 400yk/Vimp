@@ -54,8 +54,8 @@ zoom: 10
                         content: '<div class="geoxml3_infowindow"><h3>' + placemark.name + '</h3><div><ul>' + 
                         '<li>Voted yes: ' + vote_yes + '</li>' +
                         '<li>Voted no: ' + vote_no + '</li>' +
-                        '<li>Yardsign: ' + yardsign + '</li>' +
-                        '<li>Undecided: ' + undecided + '</li>'  
+                        '<li>Undecided: ' + undecided + '</li>' +
+                        '<li>Yardsign: ' + yardsign + '</li>' 
                         + '</ul></div></div>',
                         pixelOffset: new google.maps.Size(0, 2)
                     });

@@ -36,65 +36,65 @@ $(document).ready(function() {
     });
 
     // Align table headers with the contents
-$("#voters-table tbody tr:eq(0) td").each(function(index) {
-    var tdOffset = parseInt(this.offsetWidth);
-    var thEl = $('#voters-table thead tr:eq(0) th:eq(' + index.toString() + ')').first();
-    var thOffset = parseInt(thEl[0].offsetWidth);
-    // $('#voters-table thead tr:eq(0) th:eq(' + index.toString() + ')').style.width = this.offsetWidth.toString + "px";
-    thEl[0].style.width = this.offsetWidth.toString() + "px";
-});
+    $("#voters-table tbody tr:eq(0) td").each(function(index) {
+        var tdOffset = parseInt(this.offsetWidth);
+        var thEl = $('#voters-table thead tr:eq(0) th:eq(' + index.toString() + ')').first();
+            var thOffset = parseInt(thEl[0].offsetWidth);
+            // $('#voters-table thead tr:eq(0) th:eq(' + index.toString() + ')').style.width = this.offsetWidth.toString + "px";
+            thEl[0].style.width = this.offsetWidth.toString() + "px";
+    });
 
-    // Javascript for map initialization
-    var geoXmlDoc;
-    var map;
-    var info_window = null;
-    function initialize() {
-        var markers = []
-            var mapOptions = {
-                center: new google.maps.LatLng(35.321394, -119.016564),
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 10
-            };
-        map = new google.maps.Map(document.getElementById("map-canvas-voter"), mapOptions);
-        input = /** @type {HTMLInputElement} */(
-                document.getElementById('voter-address-input'));
-
-        var searchBox = new google.maps.places.SearchBox(
-                /** @type {HTMLInputElement} */(input)); 
-        google.maps.event.addListener(searchBox, 'places_changed', function() {
-            var places = searchBox.getPlaces();
-
-            for (var i = 0, marker; marker = markers[i]; i++) {
-                marker.setMap(null);
-            }
-
-            markers = [];
-            var bounds = new google.maps.LatLngBounds();
-            for (var i = 0, place; place = places[i]; i++) {
-                var image = {
-                    url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(25, 25)
+            // Javascript for map initialization
+            var geoXmlDoc;
+            var map;
+            var info_window = null;
+            function initialize() {
+                var markers = [];
+                var mapOptions = {
+                    center: new google.maps.LatLng(35.321394, -119.016564),
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 10
                 };
+                map = new google.maps.Map(document.getElementById("map-canvas-voter"), mapOptions);
+                input = /** @type {HTMLInputElement} */(
+                    document.getElementById('voter-address-input'));
 
-                var marker = new google.maps.Marker({
-                    map: map,
-                    icon: image,
-                    title: place.name,
-                    position: place.geometry.location
+                var searchBox = new google.maps.places.SearchBox(
+                        /** @type {HTMLInputElement} */(input)); 
+                google.maps.event.addListener(searchBox, 'places_changed', function() {
+                    var places = searchBox.getPlaces();
+
+                    for (var i = 0, marker; marker = markers[i]; i++) {
+                        marker.setMap(null);
+                    }
+
+                    markers = [];
+                    var bounds = new google.maps.LatLngBounds();
+                    for (var i = 0, place; place = places[i]; i++) {
+                        var image = {
+                            url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                        };
+
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            icon: image,
+                            title: place.name,
+                            position: place.geometry.location
+                        });
+
+                        markers.push(marker);
+
+                        bounds.extend(place.geometry.location);
+                    }
+
+                    map.fitBounds(bounds);
+                    map.setZoom(16);
                 });
-
-                markers.push(marker);
-
-                bounds.extend(place.geometry.location);
             }
 
-            map.fitBounds(bounds);
-            map.setZoom(16);
-        });
-    }
-
-    google.maps.event.addDomListener(window, 'load', initialize);
+            google.maps.event.addDomListener(window, 'load', initialize);
 });
