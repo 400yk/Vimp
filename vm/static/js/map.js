@@ -24,66 +24,120 @@ zoom: 10
         $("#map-canvas").html("Cannot load Google map, please check your internet connection.");
     }
 
-    // Fill in the list of precinct using the default list from database
-    $.get('/vm/home_precinct_list/', {precinct_list: null}, function(data) {
-        $("#home-precinct-list").html(data);
-        $(".btn-detail-class").hide();
-
-        // Once user clicks on any precinct, update map to show it
-        $(".individual-precinct").click(function() {
-            var name = $(this).attr("precinct-name");
-            var coord_lat = $(this).attr("coord-lat");
-            var coord_lng = $(this).attr("coord-lng");
-            var coord_alt = $(this).attr("coord-alt");
-            if (map != null) {
-                map.panTo(new google.maps.LatLng(coord_lat, coord_lng));
-                map.setZoom(13);
-
-                // Turn on the info window for that placemark
-                for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
-                    var placemark = geoXmlDoc.placemarks[i];
-                    // Color the polygon with name equals to prcinct
-                    if (placemark.polygon && placemark.name == name) {
-                        // We can just call the click listener we definted before
-                        var e = new Object();
-                        e.latLng = new google.maps.LatLng(parseFloat(coord_lat),parseFloat(coord_lng + 0.1));
-                        google.maps.event.trigger(placemark.polygon, "click", e);
-                    }
+    function colorPolygon(precinct, color, vote_yes, vote_no, yardsign, undecided, lat, lng, alt) {
+        // Set default value for lat, lng, alt
+        lat = typeof lat !== 'undefined' ? lat : 0;
+        lng = typeof lng !== 'undefined' ? lng: 0;
+        alt = typeof alt !== 'undefined' ? alt: 0;
+        // In case that user can't load Google map
+        if (geoXmlDoc == null) {
+            var hex_color = getColor(color)
+                precinct_list.push({
+                    'name': precinct,
+                    'color': hex_color,
+                    'coord_lat': lat,
+                    'coord_lng': lng,
+                    'coord_alt': alt,
+                    'area': 0
+                });
+        } else {
+            for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
+                var placemark = geoXmlDoc.placemarks[i];
+                // Color the polygon with name equals to prcinct
+                if (placemark.polygon && placemark.name == precinct) {
+                    var hex_color = getColor(color)
+                        var colorOptions = {fillColor: hex_color, fillOpacity: 0.8};
+                    placemark.polygon.setOptions(colorOptions); 
+                    // Add information when user clicks on the precinct
+                    var infoWindowOptions = geoXML3.combineOptions({
+                        content: '<div class="geoxml3_infowindow"><h3>' + placemark.name + '</h3><div><ul>' + 
+                        '<li>Voted yes: ' + vote_yes + '</li>' +
+                        '<li>Voted no: ' + vote_no + '</li>' +
+                        '<li>Yardsign: ' + yardsign + '</li>' +
+                        '<li>Undecided: ' + undecided + '</li>'  
+                        + '</ul></div></div>',
+                        pixelOffset: new google.maps.Size(0, 2)
+                    });
+                    // Save precinct and then pass it to the list to be shown
+                    var point_coord = placemark.Point.coordinates[0];
+                    precinct_list.push({
+                        'name': placemark.name,
+                        'color': hex_color,
+                        'coord_lat': point_coord['lat'],
+                        'coord_lng': point_coord['lng'],
+                        'coord_alt': point_coord['alt'],
+                        'area': google.maps.geometry.spherical.computeArea(placemark.polygon.getPath())
+                    });
+                    addOnClickListener(placemark.polygon, i, infoWindowOptions);
                 }
             }
-            // Show the detail button associated with the precinct
-            $(".btn-detail-class").hide();
-            $("#btn-detail-" + name).show();
+        }
+    }
 
+
+    // Fill in the list of precinct using the default list from database
+    $.get('/vm/home_precinct_list_default/', function(data) {
+        var tmp_precincts = $.parseJSON(data);
+        $.each(tmp_precincts, function() {
+            colorPolygon(this.precinct, (this.vote_yes + 0.001) / (this.vote_no + 0.001), this.vote_yes, this.vote_no, this.yardsign, this.undecided, this.coord_lat, this.coord_lng, this.coord_alt);
         });
+
+        $.get('/vm/home_precinct_list/', {precinct_list: JSON.stringify(precinct_list)}, function(data) {
+            $("#home-precinct-list").html(data);
+            $(".btn-detail-class").hide();
+
+            // Once user clicks on any precinct, update map to show it
+            $(".individual-precinct").click(function() {
+                var name = $(this).attr("precinct-name");
+                var coord_lat = $(this).attr("coord-lat");
+                var coord_lng = $(this).attr("coord-lng");
+                var coord_alt = $(this).attr("coord-alt");
+                if (map != null) {
+                    map.panTo(new google.maps.LatLng(coord_lat, coord_lng));
+                    map.setZoom(13);
+                    // Turn on the info window for that placemark
+                    for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
+                        var placemark = geoXmlDoc.placemarks[i];
+                        // Color the polygon with name equals to prcinct
+                        if (placemark.polygon && placemark.name == name) {
+                            // We can just call the click listener we definted before
+                            var e = new Object();
+                            e.latLng = new google.maps.LatLng(parseFloat(coord_lat),parseFloat(coord_lng + 0.1));
+                            google.maps.event.trigger(placemark.polygon, "click", e);
+                        }
+                    }
+                }
+                // Show the detail button associated with the precinct
+                $(".btn-detail-class").hide();
+                $("#btn-detail-" + name).show();
+            });
             $(".individual-precinct").mouseenter(function() {
                 $(".individual-precinct").removeClass('bold');
                 $(this).addClass('bold');
             });
-
             $(".individual-precinct").mouseleave(function() {
                 $(".individual-precinct").removeClass('bold');
             });
-
-
+        });
     });
 
-    function useTheData(doc) {
-        geoXmlDoc = doc[0];
-        // Remove the markers on the map
-        for (var i=0;i<geoXmlDoc.markers.length;i++) {
-            geoXmlDoc.markers[i].setVisible(false);
-        }
-        for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
-            var placemark = geoXmlDoc.placemarks[i];
-            if (placemark.polygon) {
-                placemark.polygon.setOptions({fillOpacity: 0});
-                // Remove the default listeners that is on every polygon
-                google.maps.event.clearListeners(placemark.polygon, 'click');
+    precinct_list = []
 
-            } 
+        function useTheData(doc) {
+            geoXmlDoc = doc[0];
+            // Remove the markers on the map
+            for (var i=0;i<geoXmlDoc.markers.length;i++) {
+                geoXmlDoc.markers[i].setVisible(false);
+            }
+            for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
+                var placemark = geoXmlDoc.placemarks[i];
+                if (placemark.polygon) {
+                    placemark.polygon.setOptions({fillOpacity: 0});
+                    // Remove the default listeners that is on every polygon
+                    google.maps.event.clearListeners(placemark.polygon, 'click');
+                } 
+            }
         }
-    }
 
     // Convert numeric value to hexadecimal colors
     function getColor(value) {
@@ -133,44 +187,12 @@ zoom: 10
         });
     }
 
-    function colorPolygon(precinct, color, vote_yes, vote_no, yardsign, undecided) {
-        for (var i=0;i<geoXmlDoc.placemarks.length;i++) {
-            var placemark = geoXmlDoc.placemarks[i];
-            // Color the polygon with name equals to prcinct
-            if (placemark.polygon && placemark.name == precinct) {
-                var hex_color = getColor(color)
-                    var colorOptions = {fillColor: hex_color, fillOpacity: 0.8};
-                placemark.polygon.setOptions(colorOptions); 
-                // Add information when user clicks on the precinct
-                var infoWindowOptions = geoXML3.combineOptions({
-                    content: '<div class="geoxml3_infowindow"><h3>' + placemark.name + '</h3><div><ul>' + 
-                    '<li>Voted yes: ' + vote_yes + '</li>' +
-                    '<li>Voted no: ' + vote_no + '</li>' +
-                    '<li>Yardsign: ' + yardsign + '</li>' +
-                    '<li>Undecided: ' + undecided + '</li>'  
-                    + '</ul></div></div>',
-                    pixelOffset: new google.maps.Size(0, 2)
-                });
-                // Save precinct and then pass it to the list to be shown
-                var point_coord = placemark.Point.coordinates[0];
-                precinct_list.push({
-                    'name': placemark.name,
-                    'color': hex_color,
-                    'coord_lat': point_coord['lat'],
-                    'coord_lng': point_coord['lng'],
-                    'coord_alt': point_coord['alt'],
-                    'area': google.maps.geometry.spherical.computeArea(placemark.polygon.getPath())
-                });
-                addOnClickListener(placemark.polygon, i, infoWindowOptions);
-            }
-        }
-
-    }
-
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         var fileInput = document.getElementById('fileInput');
         // var fileDisplayArea = document.getElementById('fileDisplayArea');
         fileInput.addEventListener('change', function(e) {
+            // First need to clear the list content
+            $("#home-precinct-list").html("");
             var file = fileInput.files[0];
             var textType = /text.*/;
             var data;
@@ -222,21 +244,16 @@ zoom: 10
                             // Show the detail button associated with the precinct
                             $(".btn-detail-class").hide();
                             $("#btn-detail-" + name).show();
-
                         });
 
                         $(".individual-precinct").mouseenter(function() {
                             $(".individual-precinct").removeClass('bold');
                             $(this).addClass('bold');
                         });
-
                         $(".individual-precinct").mouseleave(function() {
                             $(".individual-precinct").removeClass('bold');
                         });
-
-
                     });
-
                 } // end of reader onload function
                 reader.readAsText(file);   
             } else {

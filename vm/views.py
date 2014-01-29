@@ -22,7 +22,6 @@ def home_precinct_list(request):
 
             # Check if any precinct isn't in the database, if not insert one
             for obj in precinct_objs:
-                # print obj['name']
                 try:
                     Precinct.objects.get(pk = obj['name'])
                 except Precinct.DoesNotExist:
@@ -42,10 +41,29 @@ def home_precinct_list(request):
         # If didn't pass in a list of precincts, use the default 
         # list from the database, this happens when user first 
         # loads the home page (without uploading own precinct file)
-        else:
-            precinct_objs = Precinct.objects.all()
+        #else:
+        #    precinct_objs = Precinct.objects.all()
 
     return render_to_response('vm/home_precinct_list.html', {'precinct_objs': precinct_objs}, context)
+
+def home_precinct_list_default(request):
+    precinct_list_default = Precinct.objects.all()
+    list_precinct = '['
+    for precinct in precinct_list_default:
+        precinct_dict = {'precinct': precinct.name,
+                'coord_alt': precinct.coord_alt,
+                'coord_lat': precinct.coord_lat,
+                'coord_lng': precinct.coord_lng,
+                'yardsign': precinct.count_yardsign,
+                'vote_yes': precinct.count_yes,
+                'vote_no': precinct.count_no,
+                'undecided': precinct.count_undecided
+                }
+        list_precinct += json.dumps(precinct_dict) + ','
+    # Delete the last comma
+    list_precinct = list_precinct[:-1]
+    list_precinct += ']'
+    return HttpResponse(list_precinct)
 
 def precinct_detail(request, precinct_name):
     context = RequestContext(request)
@@ -59,7 +77,6 @@ def precinct_detail(request, precinct_name):
 
 def voter_response(request, voter_id):
     context = RequestContext(request)
-
     if request.method == "POST":
         if voter_id:
             voter = get_object_or_404(Wasco, pk = voter_id)
