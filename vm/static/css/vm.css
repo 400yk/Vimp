@@ -15,11 +15,6 @@
     font-weight: bold;
 }
 
-.voter-table-content {
-    height: 550px;
-    overflow: auto;
-}
-
 .voter_highlight {
     background-color: #B3B3B3;
 }
@@ -30,4 +25,21 @@
 
 .selected_voter {
     border: 2px solid;
+}
+
+#voters-table > tbody {
+    height: 550px;
+    overflow: auto;
+}
+
+#voters-table > thead {
+    text-align: left;
+}
+
+#voters-table > tbody > tr > td {
+    padding: 2px 5px;
+}
+
+#voters-table > thead > tr, #voters-table > tbody {
+    display: block;
 }

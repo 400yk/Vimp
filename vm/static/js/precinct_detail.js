@@ -33,9 +33,16 @@ $(document).ready(function() {
         } catch (ReferenceError) { 
             $("#map-canvas-voter").html("Cannot load Google map, please check your internet connection.");
         }
-
-
     });
+
+    // Align table headers with the contents
+$("#voters-table tbody tr:eq(0) td").each(function(index) {
+    var tdOffset = parseInt(this.offsetWidth);
+    var thEl = $('#voters-table thead tr:eq(0) th:eq(' + index.toString() + ')').first();
+    var thOffset = parseInt(thEl[0].offsetWidth);
+    // $('#voters-table thead tr:eq(0) th:eq(' + index.toString() + ')').style.width = this.offsetWidth.toString + "px";
+    thEl[0].style.width = this.offsetWidth.toString() + "px";
+});
 
     // Javascript for map initialization
     var geoXmlDoc;
